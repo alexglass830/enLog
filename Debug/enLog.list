@@ -123,11 +123,11 @@ int main(void)
  8000172:	f006 faab 	bl	80066cc <MX_FATFS_Init>
   MX_USB_DEVICE_Init();
  8000176:	f008 fe0d 	bl	8008d94 <MX_USB_DEVICE_Init>
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
 	if (  HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_1) == GPIO_PIN_RESET ){
  800017a:	2102      	movs	r1, #2
  800017c:	4807      	ldr	r0, [pc, #28]	; (800019c <main+0x50>)
