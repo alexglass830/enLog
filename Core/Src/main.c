@@ -118,7 +118,7 @@ int main(void)
 	  uint8_t BTN_press = 0;
 	  uint8_t BTN_release = 0;
 	  uint8_t BTN_pressed = 0;
-	  uint8_t Bouncevalue = 200;
+	  uint8_t Bouncevalue = 255;
 
 	  //обаботка дребезга
 	  if (  HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_1) == GPIO_PIN_RESET )
