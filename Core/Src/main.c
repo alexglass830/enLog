@@ -61,7 +61,7 @@ static void MX_RTC_Init(void);
 static void MX_SPI2_Init(void);
 static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
-void UART_Printf(const char* fmt, ...);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -76,10 +76,7 @@ void UART_Printf(const char* fmt, ...);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  uint8_t isRecording = 0;
-  uint8_t BTN_press = 0;
-  uint8_t BTN_release = 0;
-  uint8_t BTN_pressed = 0;
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -114,38 +111,9 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  uint8_t isRecording = 0;
-	  uint8_t BTN_press = 0;
-	  uint8_t BTN_release = 0;
-	  uint8_t BTN_pressed = 0;
-	  uint8_t Bouncevalue = 255;
+    /* USER CODE END WHILE */
 
-	  //обаботка дребезга
-	  if (  HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_1) == GPIO_PIN_RESET )
-        {
-            BTN_press++;
-            BTN_release = 0;
-            if (BTN_press > Bouncevalue)
-            {
-            	BTN_press = 0;
-                BTN_pressed =1;
-
-            }
-        }
-        else
-        {
-            BTN_release++;
-            BTN_press = 0;
-            if (BTN_release > Bouncevalue)
-            {
-                BTN_release = 0;
-                BTN_pressed = 0;
-            }
-        }
-
-
-	 /* USER CODE END WHILE */
-   /* USER CODE BEGIN 3 */
+    /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
 }
@@ -388,33 +356,35 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(status_led_GPIO_Port, status_led_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : PC13 */
-  GPIO_InitStruct.Pin = GPIO_PIN_13;
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(rec_led_GPIO_Port, rec_led_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : status_led_Pin */
+  GPIO_InitStruct.Pin = status_led_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_Init(status_led_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PA1 */
-  GPIO_InitStruct.Pin = GPIO_PIN_1;
+  /*Configure GPIO pin : controll_button_Pin */
+  GPIO_InitStruct.Pin = controll_button_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(controll_button_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : rec_led_Pin */
+  GPIO_InitStruct.Pin = rec_led_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(rec_led_GPIO_Port, &GPIO_InitStruct);
 
 }
 
 /* USER CODE BEGIN 4 */
-void UART_Printf(const char* fmt, ...) {
-    char buff[256];
-    va_list args;
-    va_start(args, fmt);
-    vsnprintf(buff, sizeof(buff), fmt, args);
-    HAL_UART_Transmit(&huart2, (uint8_t*)buff, strlen(buff),
-                      HAL_MAX_DELAY);
-    va_end(args);
-}
+
 /* USER CODE END 4 */
 
 /**
