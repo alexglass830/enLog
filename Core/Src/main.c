@@ -61,7 +61,7 @@ static void MX_RTC_Init(void);
 static void MX_SPI2_Init(void);
 static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
-
+void UART_Printf(const char* fmt, ...);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -77,6 +77,9 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
   uint8_t isRecording = 0;
+  uint8_t BTN_press = 0;
+  uint8_t BTN_release = 0;
+  uint8_t BTN_pressed = 0;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -111,14 +114,37 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	if (  HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_1) == GPIO_PIN_RESET ){
-		if ( isRecording ){
-			isRecording = 1;
-		}else{
-			isRecording = 0;
-		}
-	}
-     /* USER CODE END WHILE */
+	  uint8_t isRecording = 0;
+	  uint8_t BTN_press = 0;
+	  uint8_t BTN_release = 0;
+	  uint8_t BTN_pressed = 0;
+	  uint8_t Bouncevalue = 200;
+
+	  //обаботка дребезга
+	  if (  HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_1) == GPIO_PIN_RESET )
+        {
+            BTN_press++;
+            BTN_release = 0;
+            if (BTN_press > Bouncevalue)
+            {
+            	BTN_press = 0;
+                BTN_pressed =1;
+
+            }
+        }
+        else
+        {
+            BTN_release++;
+            BTN_press = 0;
+            if (BTN_release > Bouncevalue)
+            {
+                BTN_release = 0;
+                BTN_pressed = 0;
+            }
+        }
+
+
+	 /* USER CODE END WHILE */
    /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -380,7 +406,15 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void UART_Printf(const char* fmt, ...) {
+    char buff[256];
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buff, sizeof(buff), fmt, args);
+    HAL_UART_Transmit(&huart2, (uint8_t*)buff, strlen(buff),
+                      HAL_MAX_DELAY);
+    va_end(args);
+}
 /* USER CODE END 4 */
 
 /**
