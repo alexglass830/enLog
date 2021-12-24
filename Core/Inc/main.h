@@ -61,10 +61,12 @@ void Error_Handler(void);
 #define status_led_GPIO_Port GPIOC
 #define controll_button_Pin GPIO_PIN_1
 #define controll_button_GPIO_Port GPIOA
+#define SD_CS_Pin_Pin GPIO_PIN_1
+#define SD_CS_Pin_GPIO_Port GPIOB
 #define rec_led_Pin GPIO_PIN_9
 #define rec_led_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
-
+#define SD_SPI_HANDLE hspi2
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

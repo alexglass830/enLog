@@ -23,7 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdarg.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -61,7 +61,7 @@ static void MX_RTC_Init(void);
 static void MX_SPI2_Init(void);
 static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
-
+void UART_Printf(const char* fmt, ...);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -291,8 +291,8 @@ static void MX_SPI2_Init(void)
   hspi2.Init.DataSize = SPI_DATASIZE_8BIT;
   hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi2.Init.NSS = SPI_NSS_HARD_OUTPUT;
-  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi2.Init.NSS = SPI_NSS_SOFT;
+  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128;
   hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -359,7 +359,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(status_led_GPIO_Port, status_led_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(rec_led_GPIO_Port, rec_led_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, SD_CS_Pin_Pin|rec_led_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : status_led_Pin */
   GPIO_InitStruct.Pin = status_led_Pin;
@@ -374,17 +374,25 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(controll_button_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : rec_led_Pin */
-  GPIO_InitStruct.Pin = rec_led_Pin;
+  /*Configure GPIO pins : SD_CS_Pin_Pin rec_led_Pin */
+  GPIO_InitStruct.Pin = SD_CS_Pin_Pin|rec_led_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(rec_led_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
 
 /* USER CODE BEGIN 4 */
-
+void UART_Printf(const char* fmt, ...) {
+    char buff[256];
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buff, sizeof(buff), fmt, args);
+    HAL_UART_Transmit(&huart2, (uint8_t*)buff, strlen(buff),
+                      HAL_MAX_DELAY);
+    va_end(args);
+}
 /* USER CODE END 4 */
 
 /**
